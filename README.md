@@ -28,15 +28,6 @@ This project is based on the [Caching Server](https://roadmap.sh/projects/cachin
 
 ## How to run
 
-### Configuration
-
-In `application.properties`, set your origin server and the cache capacity(default to 100):
-
-```properties
-origin=https://your-origin-api.com
-cache.capacity=100
-```
-
 ### Running with Docker
 
 1. Clone the repository
@@ -45,7 +36,16 @@ git clone git@github.com:modasby/cache-proxy.git
 cd cache-proxy
 ```
 
-2. Build and run the container
+2. Configuration
+
+In `application.properties`, set your origin server and the cache capacity(default to 100):
+
+```properties
+origin=https://your-origin-api.com
+cache.capacity=100
+```
+
+3. Build and run the container
 ```bash
 docker build -t cache-proxy:latest .
 docker run -p 8080:8080 cache-proxy:latest
