@@ -2,7 +2,8 @@ package com.modasby.cacheproxy.proxy;
 
 import com.modasby.cacheproxy.cache.Cache;
 import com.modasby.cacheproxy.client.HttpClient;
-import com.modasby.cacheproxy.exception.BadGatewayException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import java.util.Objects;
 
 @Service
 public class CacheProxy {
+
+    private static final Logger log = LoggerFactory.getLogger(CacheProxy.class);
 
     private final Cache<String, ResponseEntity<String>> cache;
     private final HttpClient client;
@@ -41,14 +44,17 @@ public class CacheProxy {
     }
 
     public Mono<ResponseEntity<String>> getData(String path) {
+        log.debug("Requesting data from path: {}", path);
         ResponseEntity<String> cachedResponse = this.cache.get(path);
 
         if (Objects.nonNull(cachedResponse)) {
+            log.debug("Data found in cache for path: {}", path);
             HttpHeaders headers = addCacheHeader(cachedResponse.getHeaders(), "HIT");
 
             return Mono.just(responseEntityWithHeaders(cachedResponse, headers));
         }
 
+        log.debug("Data not found in cache for path: {}", path);
         return client
                 .get(path, String.class)
                 .map(r -> {
@@ -64,6 +70,7 @@ public class CacheProxy {
     }
 
     public void clearCache() {
+        log.debug("Clearing cache");
         this.cache.clear();
     }
 }
