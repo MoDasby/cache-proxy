@@ -69,7 +69,13 @@ public class LRUCache<K, V> implements Cache<K, V> {
     }
 
     public void clear() {
-        this.cacheMap.clear();
-        this.cacheList.clear();
+        lock.lock();
+
+        try {
+            this.cacheMap.clear();
+            this.cacheList.clear();
+        } finally {
+            lock.unlock();
+        }
     }
 }
