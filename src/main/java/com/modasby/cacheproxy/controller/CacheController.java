@@ -26,9 +26,9 @@ public class CacheController {
     }
 
     @GetMapping("/proxy/clear")
-    public ResponseEntity<?> clear() {
+    public Mono<ResponseEntity<?>> clear() {
         this.cacheProxy.clearCache();
 
-        return ResponseEntity.ok().build();
+        return Mono.just(ResponseEntity.ok().build());
     }
 }
